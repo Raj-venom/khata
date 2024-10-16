@@ -1,8 +1,8 @@
 import dbConnect from "@/db/dgConfig";
 import CustomerModel from "@/models/customer.model";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     dbConnect()
     try {
         const customers = await CustomerModel.find()

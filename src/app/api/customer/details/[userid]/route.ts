@@ -2,19 +2,19 @@ import dbConnect from "@/db/dgConfig";
 import CustomerModel from "@/models/customer.model";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
-    dbConnect()
-    try {
-        const reqBody = await request.json();
-        const { phone } = reqBody;
-        if (!phone) {
-            return NextResponse.json({ error: "Please provide phone number" }, { status: 400 })
-        }
+export async function GET(request: NextRequest, { params }: { params: { userid: string } }) {
 
-        const customer = await CustomerModel.findOne({ phone })
+    const userid = params.userid;
+    await dbConnect()
+
+    try {
+
+        const customer = await CustomerModel.findById(userid)
+
         if (!customer) {
             return NextResponse.json({ error: "Customer not found" }, { status: 404 })
         }
+
 
         return NextResponse.json(customer, { status: 200 })
 

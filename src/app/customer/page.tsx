@@ -25,7 +25,7 @@ const CustomerPage = () => {
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
-                const response = await axios.get('/api/customer/all'); // Replace with your API endpoint
+                const response = await axios.get('/api/customer/all'); 
                 const data: Customer[] = response.data;
                 setCustomers(data);
             } catch (error) {
@@ -39,6 +39,10 @@ const CustomerPage = () => {
     const filteredCustomers = customers.filter(customer =>
         customer.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleRowClick = (id: string) => {
+        router.push(`/update-customer/${id}`);
+    };
 
     return (
         <div className="container mx-auto p-4">
@@ -69,8 +73,8 @@ const CustomerPage = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {filteredCustomers.map((customer) => (
-                        <TableRow key={customer.id}>
+                    {filteredCustomers.map((customer, i) => (
+                        <TableRow key={customer._id + i} onClick={() => handleRowClick(customer._id)} >
                             <TableCell>{customer.id}</TableCell>
                             <TableCell>{customer.name}</TableCell>
                             <TableCell>{customer.phone}</TableCell>
