@@ -15,13 +15,23 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Please provide all the fields" }, { status: 400 })
         }
 
+        if (remaining_amount > total_amount) {
+            return NextResponse.json({ error: "Remaining amount can't be greater than total amount" }, { status: 400 })
+        }
+
+        const existingCustomer = await CustomerModel.findOne({ phone: phone.trim() })
+
+        if (existingCustomer) {
+            return NextResponse.json({ error: "Customer with this phone number already exists" }, { status: 400 })
+        }
+
         const newCustomer = await CustomerModel.create({
-            name,
-            phone,
-            address,
+            name: name.trim(),
+            phone: phone.trim(),
+            address: address.trim(),
             total_amount,
             remaining_amount,
-            remark
+            remark: remark.trim()
         })
 
         if (!newCustomer) {
