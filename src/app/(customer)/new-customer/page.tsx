@@ -15,10 +15,10 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import axios from "axios"
-import { Customer } from "@/models/customer.model"
+import Navbar from "@/components/Navbar"
 
 const formSchema = z.object({
     name: z.string().min(2, {
@@ -34,11 +34,9 @@ const formSchema = z.object({
 
 })
 
-export default function UpdateCustomer() {
-    const { id } = useParams()
-    const [customer, setCustomer] = useState<Customer | null>(null)
+export default function NewCustomer() {
     const router = useRouter()
-    const [isLoading, setIsLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
 
     // 1. Define your form.
@@ -50,51 +48,23 @@ export default function UpdateCustomer() {
             address: "",
             total_amount: 0,
             remaining_amount: 0,
-            remark: ""
+            remark: "",
         },
     })
-
-    useEffect(() => {
-        const fetchCustomer = async () => {
-            try {
-                setIsLoading(true)
-                const response = await axios.get(`/api/customer/details/${id}`)
-                const customerData = response.data
-
-                // Update form values after data is fetched
-                form.reset({
-                    name: customerData.name,
-                    phone: customerData.phone,
-                    address: customerData.address,
-                    total_amount: customerData.total_amount,
-                    remaining_amount: customerData.remaining_amount,
-                    remark: customerData.remark,
-                })
-            } catch (error) {
-                console.error('Error fetching customer:', error)
-                setError("Failed to load customer data")
-            } finally {
-                setIsLoading(false)
-            }
-        }
-
-        if (id) {
-            fetchCustomer()
-        }
-    }, [id, form.reset])
 
     // 2. Define a submit handler.
     async function onSubmit(data: z.infer<typeof formSchema>) {
         try {
-            setIsLoading(true)
+            setLoading(true)
             setError("")
 
             console.log(data)
 
-            const response = await axios.post("/api/customer/update-amount", data)
+            const response = await axios.post("/api/customer/register", data)
 
             if (response.data) {
-                console.log('Customer updated successfully')
+                console.log('Customer created')
+                router.push('/customer')
             }
 
         } catch (error: any) {
@@ -105,15 +75,13 @@ export default function UpdateCustomer() {
                 setError("An error occurred. Please try again.")
             }
         } finally {
-            setIsLoading(false)
+            setLoading(false)
         }
     }
 
-    if (isLoading) {
-        return <div className="min-h-screen flex justify-center items-center">Loading...</div>
-    }
-
     return (
+        <>
+        <Navbar />
         <div className='min-h-screen flex flex-col justify-center items-center'>
             <h2 className="text-4xl mr-4">New Customer</h2>
 
@@ -216,14 +184,14 @@ export default function UpdateCustomer() {
                             </FormItem>
                         )}
                     />
-                    {" "}
 
-                    <Button type="submit" disabled={isLoading}>
-                        {isLoading ? "Updating..." : "Update Customer"}
+                    <Button type="submit" disabled={loading}>
+                        {loading ? "Creating..." : "Create Customer"}
                     </Button>
                     {error && <p className="text-red-400">{error}</p>}
                 </form>
             </Form>
         </div>
+        </>
     )
 }

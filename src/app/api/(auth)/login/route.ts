@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         }
 
         const token = jwt.sign({ id: user._id }, process.env.SECRETE_KEY!, {
-            expiresIn: "1d"
+            expiresIn: "10d"
         });
 
         user.password = "";
@@ -44,7 +44,8 @@ export async function POST(request: NextRequest) {
         }, { status: 200 })
 
         response.cookies.set("token", token, {
-            httpOnly: true
+            httpOnly: true,
+            expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) 
         })
 
         return response
