@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken"
 
 
 export async function POST(request: NextRequest) {
-    dbConnect()
+    await dbConnect()
 
     try {
         const reqBody = await request.json();

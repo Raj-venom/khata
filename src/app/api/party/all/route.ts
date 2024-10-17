@@ -3,7 +3,7 @@ import PartyModel from "@/models/party.model";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-    dbConnect()
+    await dbConnect()
     try {
         const party = await PartyModel.find()
         return NextResponse.json(party, { status: 200 })

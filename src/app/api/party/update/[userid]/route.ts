@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest, { params }: { params: { userid: string } }) {
 
     const userid = params.userid;
-    dbConnect()
+    await dbConnect()
 
     try {
         const reqBody = await request.json();

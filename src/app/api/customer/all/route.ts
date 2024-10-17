@@ -3,7 +3,7 @@ import CustomerModel from "@/models/customer.model";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-    dbConnect()
+    await dbConnect()
     try {
         const customers = await CustomerModel.find()
         return NextResponse.json(customers, { status: 200 })

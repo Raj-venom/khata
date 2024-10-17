@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 
 export async function POST() {
-    dbConnect()
+    await dbConnect()
     try {
 
         const response = NextResponse.json({
